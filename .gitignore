@@ -1,0 +1,19 @@
+# Dependency directories
+/node_modules
+
+# Environment files
+.env
+
+# Build files and logs
+/build
+/logs
+
+# IDE and editor specific files
+.vscode
+.idea
+
+# Distribution files
+/dist
+
+# Custom user-defined files or directories
+# Add your own files or directories to ignore here
