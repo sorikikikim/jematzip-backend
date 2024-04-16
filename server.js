@@ -3,9 +3,9 @@ const path = require('path');
 const usersRouter = require('./routes/users.router');
 const postsRouter = require('./routes/posts.router');
 const restaurantRouter = require('./routes/restaurant.router');
+require('dotenv').config();
 
 const app = express();
-const PORT = 8080;
 
 const { default: mongoose } = require('mongoose');
 
@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
 // });
 
 mongoose
-    .connect(`mongodb+srv://sorikim980:12341234@cluster0.o760omt.mongodb.net/`)
+    .connect(process.env.DB_URL)
     .then(() => console.log('mongodb connect!'))
     .catch((err) => console.log(err));
 
@@ -47,6 +47,6 @@ app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 app.use('/restaurant', restaurantRouter);
 
-app.listen(PORT, () => {
-    console.log(`listening on ${PORT}`);
+app.listen(process.env.PORT, () => {
+    console.log(`listening on ${process.env.PORT}`);
 });
