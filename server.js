@@ -31,7 +31,6 @@ mongoose
     })
     .then(() => {
         console.log('mongodb connect!');
-        // Excel 파일에서 데이터 삽입하는 코드 여기로 이동
     })
     .catch((err) => console.log(err));
 
@@ -45,8 +44,6 @@ app.listen(process.env.PORT, () => {
 
 const xlsx = require('xlsx');
 const Restaurant = require('./models/restaurant.model');
-
-// MongoDB 스키마 정의
 
 // Excel 파일에서 데이터 읽기
 const workbook = xlsx.readFile('./data/restaurant-data.xlsx');
