@@ -6,8 +6,22 @@ const restaurantSchema = new mongoose.Schema({
         required: true,
     },
     location: {
-        type: String,
-        required: true,
+        roadAddress: {
+            type: String,
+            required: true,
+        },
+        parcelAddress: {
+            type: String,
+            required: true,
+        },
+        latitude: {
+            type: Number,
+            required: true,
+        },
+        longitude: {
+            type: Number,
+            required: true,
+        },
     },
     category: {
         type: String,
@@ -33,6 +47,9 @@ const restaurantSchema = new mongoose.Schema({
         type: String,
     },
     website: {
+        type: String,
+    },
+    thumbnail: {
         type: String,
     },
 });

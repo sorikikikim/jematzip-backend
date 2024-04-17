@@ -18,29 +18,21 @@ app.use((req, res, next) => {
     console.log(`end: ${req.method} ${req.baseUrl}${req.url} ${diffTime}ms`);
 });
 
-// app.use(express.static(path.join(__dirname, 'react-app/build')));
-// app.get('/', (req, res) => {
-//     res.sendFile(path.join(__dirname, '/react-app/build/index.html'));
-// });
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// app.get('/', (req, res, next) => {
-//     setImmediate(() => {
-//         next(new Error('it is an Error'));
-//     });
-// });
-
-// app.use((error, req, res, next) => {
-//     res.json({ message: error.message });
-// });
-
 mongoose
-    .connect(process.env.DB_URL)
-    .then(() => console.log('mongodb connect!'))
+    .connect(process.env.DB_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
+    .then(() => {
+        console.log('mongodb connect!');
+        // Excel 파일에서 데이터 삽입하는 코드 여기로 이동
+    })
     .catch((err) => console.log(err));
 
 app.use('/users', usersRouter);
@@ -50,3 +42,48 @@ app.use('/restaurant', restaurantRouter);
 app.listen(process.env.PORT, () => {
     console.log(`listening on ${process.env.PORT}`);
 });
+
+const xlsx = require('xlsx');
+const Restaurant = require('./models/restaurant.model');
+
+// MongoDB 스키마 정의
+
+// Excel 파일에서 데이터 읽기
+const workbook = xlsx.readFile('./data/restaurant-data.xlsx');
+const sheetName = workbook.SheetNames[0];
+const worksheet = workbook.Sheets[sheetName];
+const jsonData = xlsx.utils.sheet_to_json(worksheet);
+
+// 읽은 데이터를 MongoDB에 삽입
+Promise.all(
+    jsonData.map(async (data) => {
+        try {
+            const existingRestaurant = await Restaurant.findOne({
+                name: data.이름,
+            });
+            if (!existingRestaurant) {
+                const restaurant = new Restaurant({
+                    name: data.이름,
+                    location: {
+                        roadAddress: data.도로명주소,
+                        parcelAddress: data.지번주소,
+                        latitude: data.위도,
+                        longitude: data.경도,
+                    },
+                    category: data.카테고리,
+                    openingHours: data.영업시간,
+                    contact: data.일반전화,
+                    website: data.홈페이지URL,
+                    thumbnail: data.썸네일이미지URL,
+                });
+                await restaurant.save();
+                console.log('데이터 삽입 성공:', data.이름);
+            } else {
+                console.log('이미 존재하는 데이터:', data.이름);
+            }
+        } catch (err) {
+            console.log(data.이름);
+            console.error('데이터 삽입 오류:', err);
+        }
+    })
+);
