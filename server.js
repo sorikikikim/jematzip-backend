@@ -19,6 +19,15 @@ app.use((req, res, next) => {
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization'
+    );
+    next();
+});
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -64,8 +73,8 @@ Promise.all(
                     location: {
                         roadAddress: data.도로명주소,
                         parcelAddress: data.지번주소,
-                        latitude: data.위도,
-                        longitude: data.경도,
+                        lat: data.위도,
+                        lng: data.경도,
                     },
                     category: data.카테고리,
                     openingHours: data.영업시간,
