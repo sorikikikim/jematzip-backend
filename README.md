@@ -5,4 +5,4 @@
 
 ### 기술 스택
 - Node.js, Express, MongoDB
-- AWS EC2, Mongo Atlas
+- AWS EC2, MongoDB Atlas
